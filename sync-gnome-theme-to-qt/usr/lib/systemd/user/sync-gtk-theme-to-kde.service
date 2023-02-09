@@ -1,0 +1,11 @@
+[Unit]
+Description=Sync gtk theme from Gnome to QT
+ConditionUser=!root
+
+[Service]
+SystemCallArchitectures=native
+Type=oneshot
+ExecStart=/usr/share/sync-kde-and-gtk-places/sync-gnome-theme-to-qt.sh
+
+[Install]
+WantedBy=default.target

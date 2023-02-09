@@ -1,0 +1,7 @@
+post_install() {
+ln -s /usr/lib/systemd/user/sync-gnome-theme-to-qt.path /etc/systemd/user/default.target.wants/sync-gnome-theme-to-qt.path
+}
+
+post_remove() {
+rm -f /etc/systemd/user/default.target.wants/sync-gnome-theme-to-qt.path
+} 
