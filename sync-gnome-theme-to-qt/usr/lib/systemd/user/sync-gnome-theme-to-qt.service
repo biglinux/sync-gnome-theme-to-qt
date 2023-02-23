@@ -1,6 +1,8 @@
 [Unit]
 Description=Sync gtk theme from Gnome to QT
 ConditionUser=!root
+StartLimitBurst=5
+StartLimitIntervalSec=1
 
 [Service]
 SystemCallArchitectures=native
