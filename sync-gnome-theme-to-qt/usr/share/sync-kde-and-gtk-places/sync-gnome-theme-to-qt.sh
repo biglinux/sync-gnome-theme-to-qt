@@ -2,7 +2,8 @@
 #
 # From gtk gnome theme to kvantum theme
 # By Bruno Goncalves < www.biglinux.com.br >
-# 2023/02/08
+# Create in: 2023/02/08
+
 
 ColorScheme="$(dconf read /org/gnome/desktop/interface/color-scheme)"
 KvantumTheme="$(grep 'theme=' ~/.config/Kvantum/kvantum.kvconfig)"
@@ -12,6 +13,9 @@ if [ "$ColorScheme" = "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaitaD
     mkdir -p ~/.config/Kvantum/
     echo '[General]
 theme=KvLibadwaitaDark' > ~/.config/Kvantum/kvantum.kvconfig
+
+    # Copy the configuration file for the dark theme
+    cp -f /usr/share/biglinux/themes/breeze-dark/.config/kdeglobals ~/.config/kdeglobals
 
     IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -i dark | grep -im1 "/${IconTheme//\'/}")"
     IconFolderClean1=${IconFolder%/}
@@ -28,6 +32,9 @@ if [ "$ColorScheme" != "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaita
     mkdir -p ~/.config/Kvantum/
     echo '[General]
 theme=KvLibadwaita' > ~/.config/Kvantum/kvantum.kvconfig
+
+    # Copy the configuration file for the non-dark theme
+    cp -f /usr/share/biglinux/themes/breeze/.config/kdeglobals ~/.config/kdeglobals
 
     IconThemeWithoutDark="$(echo $IconTheme | sed 's|-dark||gi;s|dark||gi')"
     IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -vi dark | grep -im1 "/${IconThemeWithoutDark//\'/}")"
