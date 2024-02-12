@@ -15,7 +15,7 @@ if [ "$ColorScheme" = "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaitaD
 theme=KvLibadwaitaDark' > ~/.config/Kvantum/kvantum.kvconfig
 
     # Copy the configuration file for the dark theme
-    cp -f /usr/share/biglinux/themes/breeze-dark/.config/kdeglobals ~/.config/kdeglobals
+    cp -f /usr/share/sync-kde-and-gtk-places/breeze-dark ~/.config/kdeglobals
 
     IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -i dark | grep -im1 "/${IconTheme//\'/}")"
     IconFolderClean1=${IconFolder%/}
@@ -34,7 +34,7 @@ if [ "$ColorScheme" != "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaita
 theme=KvLibadwaita' > ~/.config/Kvantum/kvantum.kvconfig
 
     # Copy the configuration file for the non-dark theme
-    cp -f /usr/share/biglinux/themes/breeze/.config/kdeglobals ~/.config/kdeglobals
+    cp -f /usr/share/sync-kde-and-gtk-places/breeze ~/.config/kdeglobals
 
     IconThemeWithoutDark="$(echo $IconTheme | sed 's|-dark||gi;s|dark||gi')"
     IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -vi dark | grep -im1 "/${IconThemeWithoutDark//\'/}")"
