@@ -5,10 +5,11 @@ pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
-depends=('kvantum-theme-libadwaita-git' 'adw-gtk3')
-url="https://github.com/biglinux/sync-gnome-theme-to-qt"
+depends=('kvantum-theme-libadwaita' 'adw-gtk3')
+conflicts=('kvantum-theme-libadwaita-git')
+url="https://github.com/biglinux/$pkgname"
 pkgdesc="Sync Gnome theme to QT"
-source=("git+https://github.com/biglinux/sync-gnome-theme-to-qt.git")
+source=("git+${url}.git")
 md5sums=(SKIP)
 install=sync-gnome-theme-to-qt.install
 
