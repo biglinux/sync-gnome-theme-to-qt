@@ -59,45 +59,48 @@
 #     s|^toolBarFont=.*|toolBarFont=$font_name,$font_size,-1,5,63,0,0,0,0,0,$font_style|g; \
 #     s|^activeFont=.*|activeFont=$titlebar_font_name,$titlebar_font_size,-1,5,63,0,0,0,0,0,$titlebar_font_style|g" ~/.config/kdeglobals
 
-    
-ColorScheme="$(dconf read /org/gnome/desktop/interface/color-scheme)"
-KvantumTheme="$(grep 'theme=' ~/.config/Kvantum/kvantum.kvconfig)"
+# Only change if not in KDE
+if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
+    ColorScheme="$(dconf read /org/gnome/desktop/interface/color-scheme)"
+    KvantumTheme="$(grep 'theme=' ~/.config/Kvantum/kvantum.kvconfig)"
 
-if [ "$ColorScheme" = "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaitaDark" ]; then
-    IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
-    mkdir -p ~/.config/Kvantum/
-    echo '[General]
-theme=KvLibadwaitaDark' > ~/.config/Kvantum/kvantum.kvconfig
+    if [ "$ColorScheme" = "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaitaDark" ]; then
+        IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
+        mkdir -p ~/.config/Kvantum/
+        echo '[General]
+    theme=KvLibadwaitaDark' > ~/.config/Kvantum/kvantum.kvconfig
 
-    # Copy the configuration file for the dark theme
-    cp -f /usr/share/sync-kde-and-gtk-places/breeze-dark ~/.config/kdeglobals
+        # Copy the configuration file for the dark theme
+        cp -f /usr/share/sync-kde-and-gtk-places/breeze-dark ~/.config/kdeglobals
 
-    IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -i dark | grep -im1 "/${IconTheme//\'/}")"
-    IconFolderClean1=${IconFolder%/}
-    IconFolderClean2=${IconFolderClean1##*/}
-    if [ "$IconFolderClean2" != "" ]; then
-        dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
+        IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -i dark | grep -im1 "/${IconTheme//\'/}")"
+        IconFolderClean1=${IconFolder%/}
+        IconFolderClean2=${IconFolderClean1##*/}
+        if [ "$IconFolderClean2" != "" ]; then
+            dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
+        fi
+
+        exit 0
     fi
 
-    exit 0
-fi
+    if [ "$ColorScheme" != "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaita" ]; then
+        IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
+        mkdir -p ~/.config/Kvantum/
+        echo '[General]
+    theme=KvLibadwaita' > ~/.config/Kvantum/kvantum.kvconfig
 
-if [ "$ColorScheme" != "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaita" ]; then
-    IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
-    mkdir -p ~/.config/Kvantum/
-    echo '[General]
-theme=KvLibadwaita' > ~/.config/Kvantum/kvantum.kvconfig
+        # Copy the configuration file for the non-dark theme
+        cp -f /usr/share/sync-kde-and-gtk-places/breeze ~/.config/kdeglobals
 
-    # Copy the configuration file for the non-dark theme
-    cp -f /usr/share/sync-kde-and-gtk-places/breeze ~/.config/kdeglobals
+        IconThemeWithoutDark="$(echo $IconTheme | sed 's|-dark||gi;s|dark||gi')"
+        IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -vi dark | grep -im1 "/${IconThemeWithoutDark//\'/}")"
+        IconFolderClean1=${IconFolder%/}
+        IconFolderClean2=${IconFolderClean1##*/}
+        if [ "$IconFolderClean2" != "" ]; then
+            dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
+        fi
 
-    IconThemeWithoutDark="$(echo $IconTheme | sed 's|-dark||gi;s|dark||gi')"
-    IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -vi dark | grep -im1 "/${IconThemeWithoutDark//\'/}")"
-    IconFolderClean1=${IconFolder%/}
-    IconFolderClean2=${IconFolderClean1##*/}
-    if [ "$IconFolderClean2" != "" ]; then
-        dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
+        exit 0
     fi
 
-    exit 0
 fi
