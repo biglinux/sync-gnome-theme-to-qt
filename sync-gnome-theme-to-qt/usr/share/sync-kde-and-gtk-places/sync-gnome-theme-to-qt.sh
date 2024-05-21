@@ -64,11 +64,11 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
     ColorScheme="$(dconf read /org/gnome/desktop/interface/color-scheme)"
     KvantumTheme="$(grep 'theme=' ~/.config/Kvantum/kvantum.kvconfig)"
 
-    if [ "$ColorScheme" = "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaitaDark" ]; then
+    if [ "$ColorScheme" = "'prefer-dark'" -a "$KvantumTheme" != "theme=BigAdwaitaRoundDark" ]; then
         IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
         mkdir -p ~/.config/Kvantum/
         echo '[General]
-    theme=KvLibadwaitaDark' > ~/.config/Kvantum/kvantum.kvconfig
+    theme=BigAdwaitaRoundDark' > ~/.config/Kvantum/kvantum.kvconfig
 
         # Copy the configuration file for the dark theme
         cp -f /usr/share/sync-kde-and-gtk-places/breeze-dark ~/.config/kdeglobals
@@ -83,11 +83,11 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
         exit 0
     fi
 
-    if [ "$ColorScheme" != "'prefer-dark'" -a "$KvantumTheme" != "theme=KvLibadwaita" ]; then
+    if [ "$ColorScheme" != "'prefer-dark'" -a "$KvantumTheme" != "theme=BigAdwaitaRound" ]; then
         IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
         mkdir -p ~/.config/Kvantum/
         echo '[General]
-    theme=KvLibadwaita' > ~/.config/Kvantum/kvantum.kvconfig
+    theme=BigAdwaitaRound' > ~/.config/Kvantum/kvantum.kvconfig
 
         # Copy the configuration file for the non-dark theme
         cp -f /usr/share/sync-kde-and-gtk-places/breeze ~/.config/kdeglobals
