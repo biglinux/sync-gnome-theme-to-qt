@@ -68,7 +68,7 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
         IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
         mkdir -p ~/.config/Kvantum/
         echo '[General]
-    theme=BigAdwaitaRoundDark' > ~/.config/Kvantum/kvantum.kvconfig
+    theme=BigAdwaitaRoundGtkDark' > ~/.config/Kvantum/kvantum.kvconfig
 
         # Copy the configuration file for the dark theme
         cp -f /usr/share/sync-kde-and-gtk-places/biglinux-dark ~/.config/kdeglobals
@@ -87,7 +87,7 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
         IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
         mkdir -p ~/.config/Kvantum/
         echo '[General]
-    theme=BigAdwaitaRound' > ~/.config/Kvantum/kvantum.kvconfig
+    theme=BigAdwaitaRoundGtk' > ~/.config/Kvantum/kvantum.kvconfig
 
         # Copy the configuration file for the non-dark theme
         cp -f /usr/share/sync-kde-and-gtk-places/biglinux ~/.config/kdeglobals
