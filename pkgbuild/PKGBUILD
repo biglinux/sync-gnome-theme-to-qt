@@ -5,10 +5,10 @@ pkgver=$(date +%y.%m.%d)
 pkgrel=$(date +%H%M)
 arch=('any')
 license=('GPL')
-depends=('adw-gtk-theme' 'kvantum' 'kvantum-qt5' 'qadwaitadecorations-qt6' 'plasma-integration' 'plasma5-integration')
+depends=('adw-gtk-theme' 'kvantum' 'kvantum-qt5' 'qadwaitadecorations-qt6' 'plasma-integration' 'plasma5-integration' 'big-theme-colloided-adwaita' 'kstatusnotifieritem')
 
 # Not really provides, just workaround to don't need install not really necessary depdends os plasma-integration and plasma5-integration
-provides=('kcompletion5' 'kconfig5' 'kconfigwidgets5' 'kcoreaddons5' 'ki18n5' 'kiconthemes5' 'kio5' 'kjobwidgets5' 'knotifications5' 'kservice5' 'kwayland5' 'kwidgetsaddons5' 'kxmlgui5' 'qt5-quickcontrols2' 'qt5-wayland' 'kstatusnotifieritem' 'qqc2-breeze-style' 'qqc2-desktop-style' 'ttf-hack' 'xdg-desktop-portal-kde')
+provides=('kcompletion5' 'kconfig5' 'kconfigwidgets5' 'kcoreaddons5' 'ki18n5' 'kiconthemes5' 'kio5' 'kjobwidgets5' 'knotifications5' 'kservice5' 'kwayland5' 'kwidgetsaddons5' 'kxmlgui5' 'qt5-quickcontrols2' 'qt5-wayland' 'qqc2-breeze-style' 'qqc2-desktop-style' 'ttf-hack' 'xdg-desktop-portal-kde')
 conflicts=('kvantum-theme-libadwaita-git')
 url="https://github.com/biglinux/$pkgname"
 pkgdesc="Sync Gnome theme to QT"
