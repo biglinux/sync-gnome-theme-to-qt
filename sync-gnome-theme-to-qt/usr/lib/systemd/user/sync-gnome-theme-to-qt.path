@@ -3,7 +3,6 @@ Description=Sync gtk theme from Gnome to QT
 ConditionUser=!root
 
 [Path]
-SystemCallArchitectures=native
 PathModified=%h/.config/dconf/user
 Unit=sync-gnome-theme-to-qt.service
 
