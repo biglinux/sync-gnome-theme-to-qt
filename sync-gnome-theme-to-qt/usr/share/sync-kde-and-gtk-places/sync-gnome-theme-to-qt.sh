@@ -17,6 +17,11 @@ is_dark_theme() {
             [[ "$current_theme" == *dark* ]] && return 0
             return 1
         fi
+    elif [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
+        # XFCE theme check
+        local current_theme=$(xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null)
+        [[ "$current_theme" == *dark* ]] || [[ "$current_theme" == *Dark* ]] && return 0
+        return 1
     else
         # GNOME color scheme check
         local color_scheme=$(dconf read /org/gnome/desktop/interface/color-scheme)
@@ -36,7 +41,13 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
             dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
         fi
         
-        IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
+        # Get icon theme based on desktop environment
+        if [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
+            IconTheme="$(xfconf-query -c xsettings -p /Net/IconThemeName 2>/dev/null)"
+        else
+            IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
+        fi
+        
         mkdir -p ~/.config/Kvantum/
         echo '[General]
     theme=BigAdwaitaRoundGtkDark' > ~/.config/Kvantum/kvantum.kvconfig
@@ -51,6 +62,8 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
         if [ "$IconFolderClean2" != "" ]; then
             if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]]; then
                 dconf write /org/cinnamon/desktop/interface/icon-theme "'$IconFolderClean2'"
+            elif [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
+                xfconf-query -c xsettings -p /Net/IconThemeName -s "$IconFolderClean2"
             else
                 dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
             fi
@@ -66,7 +79,13 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
             dconf write /org/gnome/desktop/interface/color-scheme "'default'"
         fi
         
-        IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
+        # Get icon theme based on desktop environment
+        if [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
+            IconTheme="$(xfconf-query -c xsettings -p /Net/IconThemeName 2>/dev/null)"
+        else
+            IconTheme="$(dconf read /org/gnome/desktop/interface/icon-theme)"
+        fi
+        
         mkdir -p ~/.config/Kvantum/
         echo '[General]
     theme=BigAdwaitaRoundGtk' > ~/.config/Kvantum/kvantum.kvconfig
@@ -82,6 +101,8 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
         if [ "$IconFolderClean2" != "" ]; then
             if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]]; then
                 dconf write /org/cinnamon/desktop/interface/icon-theme "'$IconFolderClean2'"
+            elif [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
+                xfconf-query -c xsettings -p /Net/IconThemeName -s "$IconFolderClean2"
             else
                 dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
             fi
