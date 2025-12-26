@@ -37,7 +37,7 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
     # Dark theme configuration
     if is_dark_theme && [ "$KvantumTheme" != "theme=BigAdwaitaRoundDark" ]; then
         # Configure GTK4 dark theme
-        if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]]; then
+        if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]] || [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
             dconf write /org/gnome/desktop/interface/color-scheme "'prefer-dark'"
         fi
         
@@ -75,7 +75,7 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
     # Light theme configuration
     if ! is_dark_theme && [ "$KvantumTheme" != "theme=BigAdwaitaRound" ]; then
         # Configure GTK4 light theme
-        if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]]; then
+        if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]] || [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
             dconf write /org/gnome/desktop/interface/color-scheme "'default'"
         fi
         
