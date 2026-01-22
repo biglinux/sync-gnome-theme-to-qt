@@ -65,7 +65,7 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
             elif [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
                 xfconf-query -c xsettings -p /Net/IconThemeName -s "$IconFolderClean2"
             else
-                dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
+                [ -n "$(dconf read /org/gnome/desktop/interface/color-scheme)" ] && dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
             fi
         fi
 
@@ -104,7 +104,7 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
             elif [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
                 xfconf-query -c xsettings -p /Net/IconThemeName -s "$IconFolderClean2"
             else
-                dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
+                [ -n "$(dconf read /org/gnome/desktop/interface/color-scheme)" ] && dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
             fi
         fi
 
