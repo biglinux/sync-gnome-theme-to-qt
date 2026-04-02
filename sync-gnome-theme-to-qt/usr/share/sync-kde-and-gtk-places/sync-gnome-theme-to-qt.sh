@@ -55,6 +55,36 @@ if [[ "$XDG_SESSION_DESKTOP" != "KDE" ]]; then
         # Copy the configuration file for the light theme
         cp -f /usr/share/sync-kde-and-gtk-places/biglinux ~/.config/kdeglobals
 
+<<<<<<< Updated upstream
+=======
+        # Process and set light icon theme
+        IconThemeWithoutDark="$(echo $IconTheme | sed 's|-dark||gi;s|dark||gi')"
+
+        # For XFCE, prefer the "-light" variant of the icon theme
+        if [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
+            IconThemeLight="${IconThemeWithoutDark//\'/}-light"
+            IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -im1 "/${IconThemeLight}/")"
+            # Fallback to theme without dark if light variant not found
+            if [ -z "$IconFolder" ]; then
+                IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -vi dark | grep -im1 "/${IconThemeWithoutDark//\'/}")"
+            fi
+        else
+            IconFolder="$(ls -d /usr/share/icons/*/ ~/.local/share/icons/*/ 2> /dev/null | grep -vi dark | grep -im1 "/${IconThemeWithoutDark//\'/}")"
+        fi
+
+        IconFolderClean1=${IconFolder%/}
+        IconFolderClean2=${IconFolderClean1##*/}
+        if [ "$IconFolderClean2" != "" ]; then
+            if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]]; then
+                dconf write /org/cinnamon/desktop/interface/icon-theme "'$IconFolderClean2'"
+            elif [[ "$XDG_CURRENT_DESKTOP" == "XFCE" ]] || [[ "$XDG_SESSION_DESKTOP" == "xfce" ]]; then
+                xfconf-query -c xsettings -p /Net/IconThemeName -s "$IconFolderClean2"
+            else
+                dconf write /org/gnome/desktop/interface/icon-theme "'$IconFolderClean2'"
+            fi
+        fi
+
+>>>>>>> Stashed changes
         exit 0
     fi
 fi
