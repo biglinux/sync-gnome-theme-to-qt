@@ -4,6 +4,12 @@ is_xfce() {
     [[ "${XDG_CURRENT_DESKTOP:-}" == "XFCE" ]] || [[ "${XDG_SESSION_DESKTOP:-}" == "xfce" ]]
 }
 
+is_cinnamon() {
+    [[ "${XDG_CURRENT_DESKTOP:-}" == *"Cinnamon"* ]] || \
+        [[ "${XDG_SESSION_DESKTOP:-}" == "cinnamon" ]] || \
+        [[ "${DESKTOP_SESSION:-}" == "cinnamon" ]]
+}
+
 find_icon_theme() {
     local theme="$1"
     local dir name
@@ -51,6 +57,24 @@ sync_xfce_icon_theme() {
     [[ "$target" == "$current" ]] && return 0
 
     xfconf-query -c xsettings -p /Net/IconThemeName -s "$target" 2>/dev/null || true
+}
+
+normalize_cinnamon_icon_theme() {
+    local mode="$1"
+    local current="$2"
+    local base target
+
+    base="$(printf '%s' "$current" | sed -E 's/[-_ ]?(dark|light)$//I')"
+
+    if [[ "$mode" == "dark" ]]; then
+        target="$(find_icon_theme "${base:-bigicons-papient}-dark" || true)"
+        [[ -n "$target" ]] || target="${current:-bigicons-papient-dark}"
+    else
+        target="$(find_icon_theme "${base:-bigicons-papient}" || true)"
+        [[ -n "$target" ]] || target="bigicons-papient"
+    fi
+
+    printf '%s\n' "$target"
 }
 
 sync_xfce_window_theme() {
@@ -121,6 +145,19 @@ remove_ini_key() {
     sed -i "/^${key}=/d" "$file"
 }
 
+read_dconf_string() {
+    local key="$1"
+    dconf read "$key" 2>/dev/null | sed "s/^'//;s/'$//" || true
+}
+
+sync_adw_color_scheme() {
+    local color_scheme="$1"
+
+    export ADW_DEBUG_COLOR_SCHEME="$color_scheme"
+    dbus-update-activation-environment --systemd ADW_DEBUG_COLOR_SCHEME 2>/dev/null || true
+    systemctl --user import-environment ADW_DEBUG_COLOR_SCHEME 2>/dev/null || true
+}
+
 sync_gtk_color_scheme() {
     local mode="$1"
     local gtk_theme icon_theme prefer_dark color_scheme
@@ -139,13 +176,22 @@ sync_gtk_color_scheme() {
         icon_theme="$(xfconf-query -c xsettings -p /Net/IconThemeName 2>/dev/null || true)"
         sync_xfce_window_theme "$gtk_theme"
         sync_xfce_panel_theme "$mode"
+    elif is_cinnamon; then
+        gtk_theme="$(read_dconf_string /org/cinnamon/desktop/interface/gtk-theme)"
+        icon_theme="$(read_dconf_string /org/cinnamon/desktop/interface/icon-theme)"
+        icon_theme="$(normalize_cinnamon_icon_theme "$mode" "$icon_theme")"
     else
         gtk_theme="$(gsettings get org.gnome.desktop.interface gtk-theme 2>/dev/null | sed "s/^'//;s/'$//" || true)"
         icon_theme="$(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null | sed "s/^'//;s/'$//" || true)"
     fi
 
-    [[ -n "$gtk_theme" ]] || gtk_theme="adw-gtk3"
-    [[ -n "$icon_theme" ]] || icon_theme="bigicons-papient"
+    if [[ "$mode" == "dark" ]]; then
+        [[ -n "$gtk_theme" ]] || gtk_theme="adw-gtk3-dark"
+        [[ -n "$icon_theme" ]] || icon_theme="bigicons-papient-dark"
+    else
+        [[ -n "$gtk_theme" ]] || gtk_theme="adw-gtk3"
+        [[ -n "$icon_theme" ]] || icon_theme="bigicons-papient"
+    fi
 
     for gtk_dir in "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"; do
         set_ini_key "$gtk_dir/settings.ini" "gtk-theme-name" "$gtk_theme"
@@ -157,15 +203,24 @@ sync_gtk_color_scheme() {
         fi
     done
 
+    if is_cinnamon; then
+        gsettings set org.cinnamon.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
+        gsettings set org.cinnamon.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
+    fi
+
     gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface color-scheme "$color_scheme" 2>/dev/null || true
+    if is_cinnamon; then
+        sync_adw_color_scheme "$color_scheme"
+    fi
 }
 
 # Function to check if current theme is dark
 is_dark_theme() {
     if [[ "$XDG_CURRENT_DESKTOP" = *"Cinnamon" ]]; then
-        local current_theme=$(dconf read /org/cinnamon/desktop/interface/gtk-theme)
+        local current_theme
+        current_theme=$(dconf read /org/cinnamon/desktop/interface/gtk-theme)
         # Remove quotes from theme name
         current_theme=${current_theme//\'/}
         
@@ -181,12 +236,14 @@ is_dark_theme() {
         fi
     elif is_xfce; then
         # XFCE theme check
-        local current_theme=$(xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null)
+        local current_theme
+        current_theme=$(xfconf-query -c xsettings -p /Net/ThemeName 2>/dev/null)
         [[ "$current_theme" == *dark* ]] || [[ "$current_theme" == *Dark* ]] && return 0
         return 1
     else
         # GNOME color scheme check
-        local color_scheme=$(dconf read /org/gnome/desktop/interface/color-scheme)
+        local color_scheme
+        color_scheme=$(dconf read /org/gnome/desktop/interface/color-scheme)
         [[ "$color_scheme" = "'prefer-dark'" ]] && return 0
         return 1
     fi
