@@ -193,10 +193,9 @@ read_dconf_string() {
     dconf read "$key" 2>/dev/null | sed "s/^'//;s/'$//" || true
 }
 
-sync_adw_color_scheme() {
-    export ADW_DEBUG_COLOR_SCHEME="default"
-    dbus-update-activation-environment --systemd ADW_DEBUG_COLOR_SCHEME 2>/dev/null || true
-    systemctl --user import-environment ADW_DEBUG_COLOR_SCHEME 2>/dev/null || true
+clear_adw_color_scheme_override() {
+    unset ADW_DEBUG_COLOR_SCHEME
+    systemctl --user unset-environment ADW_DEBUG_COLOR_SCHEME 2>/dev/null || true
 }
 
 sync_gtk_color_scheme() {
@@ -253,8 +252,8 @@ sync_gtk_color_scheme() {
     gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
     gsettings set org.gnome.desktop.interface color-scheme "$color_scheme" 2>/dev/null || true
-    if is_cinnamon; then
-        sync_adw_color_scheme "$color_scheme"
+    if is_xfce || is_cinnamon; then
+        clear_adw_color_scheme_override
     fi
 }
 
