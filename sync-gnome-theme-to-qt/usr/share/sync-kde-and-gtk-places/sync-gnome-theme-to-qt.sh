@@ -194,9 +194,7 @@ read_dconf_string() {
 }
 
 sync_adw_color_scheme() {
-    local color_scheme="$1"
-
-    export ADW_DEBUG_COLOR_SCHEME="$color_scheme"
+    export ADW_DEBUG_COLOR_SCHEME="default"
     dbus-update-activation-environment --systemd ADW_DEBUG_COLOR_SCHEME 2>/dev/null || true
     systemctl --user import-environment ADW_DEBUG_COLOR_SCHEME 2>/dev/null || true
 }
@@ -240,7 +238,7 @@ sync_gtk_color_scheme() {
     for gtk_dir in "$HOME/.config/gtk-3.0" "$HOME/.config/gtk-4.0"; do
         set_ini_key "$gtk_dir/settings.ini" "gtk-theme-name" "$gtk_theme"
         set_ini_key "$gtk_dir/settings.ini" "gtk-icon-theme-name" "$icon_theme"
-        if is_xfce; then
+        if is_xfce || is_cinnamon; then
             remove_ini_key "$gtk_dir/settings.ini" "gtk-application-prefer-dark-theme"
         else
             set_ini_key "$gtk_dir/settings.ini" "gtk-application-prefer-dark-theme" "$prefer_dark"
