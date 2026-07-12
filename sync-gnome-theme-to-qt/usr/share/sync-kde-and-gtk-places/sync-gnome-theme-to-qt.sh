@@ -247,11 +247,15 @@ sync_gtk_color_scheme() {
     if is_cinnamon; then
         gsettings set org.cinnamon.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
         gsettings set org.cinnamon.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface color-scheme "$color_scheme" 2>/dev/null || true
+    elif is_xfce; then
+        gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
+        gsettings set org.gnome.desktop.interface color-scheme "$color_scheme" 2>/dev/null || true
     fi
 
-    gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme" 2>/dev/null || true
-    gsettings set org.gnome.desktop.interface icon-theme "$icon_theme" 2>/dev/null || true
-    gsettings set org.gnome.desktop.interface color-scheme "$color_scheme" 2>/dev/null || true
     if is_xfce || is_cinnamon; then
         clear_adw_color_scheme_override
     fi
