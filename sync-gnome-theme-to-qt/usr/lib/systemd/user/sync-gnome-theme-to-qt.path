@@ -3,7 +3,10 @@ Description=Sync gtk theme from Gnome to QT
 ConditionUser=!root
 
 [Path]
+PathChanged=%h/.config/dconf/user
 PathModified=%h/.config/dconf/user
+PathChanged=%h/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
+PathModified=%h/.config/xfce4/xfconf/xfce-perchannel-xml/xsettings.xml
 Unit=sync-gnome-theme-to-qt.service
 
 [Install]
